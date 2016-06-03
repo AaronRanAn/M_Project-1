@@ -1,0 +1,108 @@
+---
+title: "Mini-Project 1 Regression"
+author: "Aaron"
+date: "June 2, 2016"
+output: 
+  html_document: 
+    highlight: haddock
+    theme: cosmo
+---
+
+```{r message=F}
+library(DAAG)
+library(dplyr)
+library(readr)
+library(knitr)
+library(magrittr)
+```
+
+
+### Synopsis
+
+____________
+
+#### What study will achieve?
+
+In this assignment, I useed the R dataset `“litters”` (from the `DAAG` package) and create a regression model to predict brain weight.
+
+####  Cite the data source
+
+Data Description From DAAG Document
+
+> Data on the body and brain weights of 20 mice, together with the size of the litter. Two mice were taken from each litter size.
+
+> Wainright P, Pelkman C and Wahlsten D 1989. The quantitative relationship between nutritional effects on preweaning growth and behavioral development in mice. Developmental Psychobiology 22: 183-193.
+
+### Methods
+
+____________
+
+#### Why (statistically) you can use the technique you choose?
+
+I choose `regression` because it helps to fit a linear pattern through data. 
+
+#### Explain the fields in the dataset
+
+```{r}
+glimpse(litters)
+```
+
+- `lsize`: litter size
+- `bodywt`: body weight
+- `brainwt`: brain weight
+
+#### Explain/show your experimental setup (i.e. the r linear model)
+
+As follow:
+
+```{r}
+
+litters %>% 
+        lm(brainwt ~ lsize + bodywt, .) %>% summary()
+
+```
+
+### Analysis
+____________
+
+#### Show your final regression equation:
+
+```{r}
+
+litters %>% lm(brainwt ~ lsize + bodywt, .) -> fit_0
+
+as.formula(
+  paste0("brainwt ~ ", round(coefficients(fit_0)[1],4), " + ", 
+    paste(sprintf("%.4f * %s", 
+                  coefficients(fit_0)[-1],  
+                  names(coefficients(fit_0)[-1])), 
+          collapse=" + ")
+  )
+)
+
+```
+
+#### Show a diagram of your regression model vs. the data
+
+```{r}
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
+plot(fit_0)
+```
+
+#### Discuss the quality of fit, explain what the diagram shows in terms of how to use it to predict
+
+From the summary, quality of the fit is good, model explain **60.94%** variation of the data. 
+
+We use the final equation to get the expected value of the **brain weight** by inputting the right `lsize` and `bodywt`
+
+
+### Conclusion
+
+____________
+
+#### Explain what your experiment accomplished
+
+Fit a very simple linear model over a very very small (20 obs) data, proved that litter size and body weight can predict the brain weights of the rats. 
+
+
+
